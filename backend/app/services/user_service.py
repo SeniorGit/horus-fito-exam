@@ -1,6 +1,7 @@
 from app.utils.validator import validation
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models import modelUsers
+from flask_jwt_extended import create_access_token
 
 class UserService:
     @staticmethod
@@ -71,22 +72,34 @@ class UserService:
             
             if not check_password_hash(user['password'], Password):
                 return {"success": False, "message": "Username atau password salah"}, 401
-                  
+            
+            access_token = create_access_token(
+                identity=user['id'],
+                additional_claims={
+                    'username': user['username'],
+                }
+            )
+
             # send data to body
             return {
                 "success": True,
                 "message": f"Login berhasil untuk {Username}",
                 "data": {
-                    "id": user['id'],
-                    "nama": user['nama'],
-                    "username": user['username'],
-                    "email": user['email'],
-                    "create_at": user['create_at'].isoformat() if user['create_at'] else None
+                    "access_token": access_token,
+                    "token_type": "bearer",
+                    "user":{
+                        "id": user['id'],
+                        "nama": user['nama'],
+                        "username": user['username'],
+                        "email": user['email'],
+                        "create_at": user['create_at'].isoformat() if user['create_at'] else None
+                    }
+                    
                 }
             }, 200
             
         except Exception as e:
             return {
                 "success": False,
-                "message": f"Terjadi kesalahan server: {str(e)}"
+                "message": f"Terjadi kesalahan server Login: {str(e)}"
             }, 500

@@ -2,15 +2,19 @@ import psycopg2
 import psycopg2.extras
 from flask import g
 from app.config import Config
+from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
-# database connection
+jwt = JWTManager()
+cors = CORS()
+
 def get_db():
     if 'db' not in g:
         try:
             g.db = psycopg2.connect(
                 host=Config.DB_HOST,
                 user=Config.DB_USER,
-                password=Config.DB_PASSWORD,  # ← PASTIKAN INI ADA!
+                password=Config.DB_PASSWORD,
                 database=Config.DB_NAME,
                 port=Config.DB_PORT
             )
@@ -21,7 +25,6 @@ def get_db():
             raise
     return g.db
 
-# close database
 def close_db(e=None):
     db = g.pop('db', None)
     if db is not None:
