@@ -11,6 +11,7 @@ class Config:
     DB_NAME = os.getenv('DB_NAME')
     DB_PORT = int(os.getenv('DB_PORT'))  
 
+    SECRET_KEY = os.getenv('SECRET_KEY')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
 

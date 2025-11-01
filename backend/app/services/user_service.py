@@ -74,7 +74,7 @@ class UserService:
                 return {"success": False, "message": "Username atau password salah"}, 401
             
             access_token = create_access_token(
-                identity=user['id'],
+                identity=str(user['id']),
                 additional_claims={
                     'username': user['username'],
                 }
@@ -103,3 +103,115 @@ class UserService:
                 "success": False,
                 "message": f"Terjadi kesalahan server Login: {str(e)}"
             }, 500
+    
+    @staticmethod
+    def get_all_users():
+        try:
+            users = modelUsers.get_all_users()
+            return {
+                "success": True,
+                "data": users,
+            }, 200
+        except Exception as e:
+            return {
+                "success": False,
+                "message":  f"Terjadi kesalahan server Update: {str(e)}"
+            }, 500
+    
+    @staticmethod
+    def get_user_by_id(user_id):
+        try:
+            user = modelUsers.get_user_by_id(user_id)
+            if not user:
+                return {
+                    "success": False,
+                    "message": "User tidak ditemukan"
+                }, 404
+            return {
+                "success": True,
+                "data": user
+            }, 200
+        except Exception as e:
+            return {
+                "success": False, 
+                "message":  f"Terjadi kesalahan server : {str(e)}"
+            }, 500
+
+    @staticmethod
+    def update(id, username, email, nama):
+        try:
+
+            existing_user = modelUsers.get_user_by_id(id=id)
+            if not existing_user:
+                return {
+                    "success": False,
+                    "message": "User tidak dapat ditemukan"
+                }, 404
+            
+            validator_error = validation._validate_input_update(nama=nama, username=username, email=email)
+            if validator_error:
+                return validator_error
+            
+            # is email
+            existing_email_user = modelUsers.get_user_by_email(email=email)
+            if existing_email_user and existing_email_user['id'] != id:
+                return {"success": False, "message": "Email telah terdaftar oleh user lain"}, 409
+            
+            # is username
+            existing_username_user = modelUsers.get_user_by_username(username=username)
+            if existing_username_user and existing_username_user['id'] != id:
+                return {"success": False, "message": "Username telah terdaftar oleh user lain"}, 409
+            
+            updated_user = modelUsers.update_user_data(id=id, username=username, email=email, nama=nama)
+            if not updated_user:
+                return {
+                    "success": False,
+                    "message": "Gagal mengupdate user di database"
+                }, 500
+            
+            return{
+                "success":True,
+                "message": "data berhasil diupdate",
+                "data": {
+                    "username" : updated_user["username"],
+                    "email" : updated_user["email"],
+                    "nama" : updated_user["nama"]
+                }
+            },200
+        
+        except Exception as e:
+            return{
+                "success": False,
+                "message": f"Terjadi kesalahan server Update: {str(e)}"   
+            },500
+
+    @staticmethod
+    def delete(id):
+        try:
+
+            existing_user = modelUsers.get_user_by_id(id=id)
+            if not existing_user:
+                return {
+                    "success": False,
+                    "message": "User tidak dapat ditemukan"
+                }, 404
+            
+            delete_user = modelUsers.delete_user(id=id)
+            if not delete_user:
+                return{
+                    "success": False,
+                    "message": "gagal menghapus user dari database"
+                }, 500
+            
+            return{
+                "success":True,
+                "message": "data berhasil didelete",
+            }, 200
+        
+        except Exception as e:
+            return{
+                "success": False,
+                "message": f"Terjadi kesalahan server delete: {str(e)}"   
+            },500
+
+            
