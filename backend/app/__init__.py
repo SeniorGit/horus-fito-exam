@@ -6,11 +6,11 @@ from .extensions import jwt, close_db, cors
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
-
+    
     jwt.init_app(app)
     cors.init_app(app, 
                   origins=app.config['CORS_ORIGINS'],
-                  methods=["GET", "POST", "PUT", "DELETE"],
+                  methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
                   allow_headers=["Content-Type", "Authorization"],
                   supports_credentials=True
                   )

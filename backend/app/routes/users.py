@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.services.user_service import UserService
+from app.services.user_service import UserService, modelUsers
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 users_bp = Blueprint('users', __name__)
@@ -57,4 +57,26 @@ def update(user_id):
 @users_bp.route('/delete/<int:user_id>', methods=['DELETE'])
 def delete(user_id):
     result, status_code = UserService.delete(id=user_id)
+    return jsonify(result), status_code
+
+# search 
+@users_bp.route('/')
+def search_users():
+    search = request.args.get('search', '').strip()    
+    users = modelUsers.search_users(search)
+    
+    users_data = []
+    for user in users:
+        users_data.append({
+            'id': user['id'],
+            'username': user['username'],
+            'email': user['email'],
+            'nama': user['nama']
+        })
+    return jsonify(users_data), 200
+
+# get user id
+@users_bp.route('/<int:user_id>', methods=['GET'])
+def get_id(user_id):
+    result, status_code = UserService.get_user_by_id(user_id)
     return jsonify(result), status_code
