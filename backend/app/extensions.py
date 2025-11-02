@@ -17,9 +17,7 @@ def get_db():
             database=Config.DB_NAME,
             port=Config.DB_PORT
         )
-        g.db.cursor_factory = psycopg2.extras.RealDictCursor
-        print("✅ Database connected successfully!")
-        
+        g.db.cursor_factory = psycopg2.extras.RealDictCursor    
     return g.db
 
 def close_db(e=None):

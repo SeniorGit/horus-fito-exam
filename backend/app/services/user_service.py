@@ -189,14 +189,14 @@ class UserService:
     def delete(id):
         try:
 
-            existing_user = modelUsers.get_user_by_id(id=id)
+            existing_user = modelUsers.get_user_by_id(id)
             if not existing_user:
                 return {
                     "success": False,
                     "message": "User tidak dapat ditemukan"
                 }, 404
             
-            delete_user = modelUsers.delete_user(id=id)
+            delete_user = modelUsers.delete_user(id)
             if not delete_user:
                 return{
                     "success": False,

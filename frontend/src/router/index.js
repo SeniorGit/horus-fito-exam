@@ -1,9 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginUser from '../views/LoginUser.vue'
+import { useAuthStore } from '@/store/auth'
+import DashboardUser from '../views/DashboardUser.vue'
+import RegisterUser from '../views/RegisterUser.vue'
+import UpdateUser from '../views/UpdateUser.vue'
 
-const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
+const routes = [
     {
       path: '/',
       name: 'login',
@@ -12,29 +14,35 @@ const router = createRouter({
     {
       path: '/register',
       name: 'register',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/RegisterUser.vue'),
+      component: RegisterUser
     },
     {
       path: '/dashboard',
       name: 'dashboard',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/DashboardUser.vue'),
+      component: DashboardUser,
+      meta: { requiresAuth: true }
     },
     {
-      path: '/update',
+      path: '/update/:id',
       name: 'update',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/UpdateUser.vue'),
+      component: UpdateUser,
+      meta: { requiresAuth: true }
     },
-    
-  ],
+  ]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+})
+
+router.beforeEach((to,from,next)=>{
+  const authstore = useAuthStore()
+
+  if(to.meta.requiresAuth && !authstore.token){
+    next('/')
+  }else{
+    next()
+  }
 })
 
 export default router
