@@ -99,23 +99,4 @@ class modelUsers:
         finally:
             cursor.close()
 
-    @staticmethod
-    def search_users(searching):
-        db = get_db()
-        cursor = db.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        
-        try:
-            query = """
-                SELECT * FROM users
-                WHERE username ILIKE %s
-                    OR email ILIKE %s
-                    OR nama ILIKE %s
-                ORDER BY id
-            """
-
-            search = f'%{searching}'
-            cursor.execute(query, (search, search, search))
-            return cursor.fetchall()
-
-        finally:
-            cursor.close()
+    

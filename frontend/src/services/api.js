@@ -47,10 +47,5 @@ export const getData = {
         return api.delete(`/api/users/delete/${id}`)
     },
 
-    serachUser(searchKeyword) {
-        return api.get('/api/users', { 
-        params: { search: searchKeyword }
-        })
-    },
 }
 export default api

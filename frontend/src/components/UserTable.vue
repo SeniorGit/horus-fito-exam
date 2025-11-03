@@ -9,10 +9,6 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
-  showSearch: {
-    type: Boolean,
-    default: true
-  }
 })
 
 const emit = defineEmits(['edit-user', 'delete-user', 'refresh'])
@@ -32,7 +28,6 @@ const filteredUsers = computed(() => {
   const keyword = searchKeyword.value.toLowerCase()
   return allUsers.value.filter(user => 
     user.username?.toLowerCase().includes(keyword) ||
-    user.email?.toLowerCase().includes(keyword) ||
     user.nama?.toLowerCase().includes(keyword)
   )
 })
@@ -102,7 +97,6 @@ onMounted(() => {
   <div class="table-section">
     <div class="table-header">
       <SearchBar 
-        v-if="showSearch"
         placeholder="Cari username atau nama..."
         @search="handleSearch"
       />
@@ -163,7 +157,6 @@ onMounted(() => {
 
 .table-header {
   display: flex;
-  justify-content: center;
   align-items: center;
   margin-bottom: 20px;
 }

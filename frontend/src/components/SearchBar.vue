@@ -3,8 +3,7 @@ import { ref, watch, defineProps, defineEmits } from 'vue'
 
 const props = defineProps({
   placeholder: {
-    type: String,
-    default: 'Cari..'
+    type: String
   }
 })
 
@@ -15,6 +14,7 @@ let searchTimeout = null
 watch(searchKeyword, (newVal) => {
   clearTimeout(searchTimeout)
   if (newVal.length === 0 || newVal.length >= 1) {
+    console.log(searchTimeout)
     searchTimeout = setTimeout(() => {
       emit('search', newVal)
     }, 500)

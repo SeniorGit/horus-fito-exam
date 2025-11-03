@@ -22,7 +22,7 @@ const handleEditUser = (user) => {
 <template>
   <div class="dashboard">
     <div class="dashboard-header">
-      <h1>Dashboard Admin</h1>
+      <h1>DASHBOARD PENGGUNA</h1>
 
       <button @click="handleLogout" class="btn-logout">Logout</button>
     </div>
